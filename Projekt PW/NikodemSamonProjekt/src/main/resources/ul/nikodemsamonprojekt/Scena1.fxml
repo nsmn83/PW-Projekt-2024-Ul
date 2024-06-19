@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: yellow;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ul.nikodemsamonprojekt.Kontroler1Sceny">
+   <children>
+      <Text layoutX="44.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wprowadź liczbę pszczół:" />
+      <Text layoutX="47.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wprowadź liczbę miejsc:" />
+      <Button fx:id="przejscie" layoutX="53.0" layoutY="339.0" mnemonicParsing="false" onAction="#login" text="Zatwierdź" />
+      <TextField fx:id="inputPszczoly" layoutX="47.0" layoutY="140.0" />
+      <TextField fx:id="inputMiejsca" layoutX="47.0" layoutY="217.0" />
+      <Text layoutX="53.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Symulacja Ula">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font>
+      </Text>
+      <ImageView fx:id="beeHive" fitHeight="364.0" fitWidth="382.0" layoutX="207.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../ul-scena2.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="47.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wprowadź czas życia:" />
+      <TextField fx:id="inputZycia" layoutX="47.0" layoutY="293.0" />
+   </children>
+</AnchorPane>
