@@ -1,5 +1,7 @@
 package ul.nikodemsamonprojekt;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Pszczola extends Thread{
     private final Ul ul;
     private int ileWizyt;
@@ -29,7 +31,8 @@ public class Pszczola extends Thread{
                 ul.wyjdz(ileWizyt, id, maksWizyt);
             }
             try {
-                Thread.sleep(2000);
+                int czasSnu = ThreadLocalRandom.current().nextInt(2000, 5000);
+                Thread.sleep(czasSnu);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

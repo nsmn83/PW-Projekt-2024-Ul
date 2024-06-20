@@ -1,7 +1,6 @@
 package ul.nikodemsamonprojekt;
 
 import javafx.application.Platform;
-
 import java.util.concurrent.Semaphore;
 
 public class Ul {
@@ -10,7 +9,6 @@ public class Ul {
     private final Semaphore chce_wejsc;
     private final Semaphore chce_wyjsc;
     private final Semaphore miejsca;
-    private final Semaphore narodziny;
     private Kontroler2Sceny kontroler2Sceny;
     int id_pszczoly;
     int ileJaj;
@@ -23,7 +21,6 @@ public class Ul {
         this.wlotek = new Semaphore[2];
         this.chce_wejsc = new Semaphore(2,true);
         this.chce_wyjsc = new Semaphore(2, true);
-        this.narodziny = new Semaphore(1);
         this.miejsca = new Semaphore(pojemnosc);
         for (int i = 0; i < 2; i++) {
             this.wlotek[i] = new Semaphore(1);
@@ -58,13 +55,13 @@ public class Ul {
             try {
                 if (wlotek[0].tryAcquire()) {
                     zajetoWejscie = true;
-                    Platform.runLater(() -> kontroler2Sceny.wlot(100, true, false));
+                    Platform.runLater(() -> kontroler2Sceny.wlot(120, true, false));
                     System.out.println("Pszczolka " + nr+ " wchodzi do ula przez wejscie 1 po raz: \n" + ileWizyt);
                     Thread.sleep(1500);
                     wlotek[0].release();
                 } else if (wlotek[1].tryAcquire()) {
                     zajetoWejscie = true;
-                    Platform.runLater(() -> kontroler2Sceny.wlot(300, true, false));
+                    Platform.runLater(() -> kontroler2Sceny.wlot(320, true, false));
                     System.out.println("Pszczolka " + nr+ " wchodzi do ula przez wejscie 2 po raz: \n" + ileWizyt);
                     Thread.sleep(1500);
                     wlotek[1].release();
@@ -87,13 +84,13 @@ public class Ul {
             try {
                 if (wlotek[1].tryAcquire()) {
                     zajetoWejscie = true;
-                    wywolajAnimacjeWylotu(ileWizyt, maksWizyt, 300);
-                    System.out.println("Pszczolka " + nr+ " wychodzi z ula przez wejscia 2 po raz: \n" + ileWizyt);
+                    wywolajAnimacjeWylotu(ileWizyt, maksWizyt, 320);
+                    System.out.println("Pszczolka " + nr+ " wychodzi z ula przez wejscie 2 po raz: \n" + ileWizyt);
                     Thread.sleep(1500);
                     wlotek[1].release();
                 } else if (wlotek[0].tryAcquire()) {
                     zajetoWejscie = true;
-                    wywolajAnimacjeWylotu(ileWizyt, maksWizyt, 100);
+                    wywolajAnimacjeWylotu(ileWizyt, maksWizyt, 120);
                     System.out.println("Pszczolka " + nr+ " wychodzi z ula przez wejscie 1 po raz: \n" + ileWizyt);
                     Thread.sleep(1500);
                     wlotek[0].release();
@@ -119,10 +116,8 @@ public class Ul {
     public void narodziny(){
         try {
             miejsca.acquire();
-            narodziny.acquire();
             System.out.println("Pszczolka się urodziła.\n");
             zwieksz();
-            narodziny.release();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -132,7 +127,7 @@ public class Ul {
         boolean zajeteMiejsce = false;
         while(!zajeteMiejsce){
             if(miejsca.tryAcquire(ileJaj)){
-               zajeteMiejsce = true;
+                zajeteMiejsce = true;
             }
         }
         System.out.println("Królowa zajęła miejsce na jajeczka\n");
@@ -155,17 +150,11 @@ public class Ul {
             }
         }
         try {
-            narodziny.acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         zeruj();
-        narodziny.release();
         kontroler2Sceny.wypiszZajecieMiejsca(ileJaj);
         System.out.println("Pszczółki się wykluły - odblokowanie możliwości wchodzenia do ula\n");
         chce_wejsc.release(2);

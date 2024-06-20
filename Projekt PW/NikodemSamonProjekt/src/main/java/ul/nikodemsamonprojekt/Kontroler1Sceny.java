@@ -37,23 +37,18 @@ public class Kontroler1Sceny {
         }
         Kontroler2Sceny scene2Controller = loader.getController();
 
-        //zaladowanie poczatkowych wartosci danych wejsciowych
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream("config.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        //odebranie danych od uztykownika
         try{
             miejsca = Integer.parseInt(inputMiejsca.getText());
             pszczoly = Integer.parseInt(inputPszczoly.getText());
             czasZycia = Integer.parseInt(inputZycia.getText());
         }
         catch(NumberFormatException e){
-            miejsca = Integer.parseInt(properties.getProperty("liczbaMiejsc"));
-            pszczoly = Integer.parseInt(properties.getProperty("liczbaPszczol"));
-            czasZycia = Integer.parseInt(properties.getProperty("czasZycia"));
+            daneZPliku();
+        }
+
+        if(miejsca <= 0 || pszczoly <= 0 || czasZycia <= 0){
+            daneZPliku();
         }
 
         scene2Controller.startSymulacji(miejsca, pszczoly, czasZycia);
@@ -64,6 +59,17 @@ public class Kontroler1Sceny {
         stage.show();
     }
 
+    private void daneZPliku(){
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream("config.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        miejsca = Integer.parseInt(properties.getProperty("liczbaMiejsc"));
+        pszczoly = Integer.parseInt(properties.getProperty("liczbaPszczol"));
+        czasZycia = Integer.parseInt(properties.getProperty("czasZycia"));
+    }
+
 }
-
-

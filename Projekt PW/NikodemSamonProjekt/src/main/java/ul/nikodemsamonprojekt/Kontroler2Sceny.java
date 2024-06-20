@@ -4,24 +4,19 @@ import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
-
-import java.net.URL;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 public class Kontroler2Sceny {
 
     @FXML
     private Text tekst; // tekst do wyswietlania informacji
     @FXML
-    private Pane panelAnimacji; // panel do dodawania animacji
+    private AnchorPane panelAnimacji;
 
     private int liczbaMiejsc;
     private int poczatkowaLiczbaPszczol;
@@ -69,7 +64,7 @@ public class Kontroler2Sceny {
     }
 
     public void wypiszZajecieMiejsca(int x){
-            tekst.setText("Ilość nowych pszczół: " + x + "\n");
+        tekst.setText("Ilość nowych pszczół: " + x + "\n");
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> tekst.setText(""));
         pause.play();
