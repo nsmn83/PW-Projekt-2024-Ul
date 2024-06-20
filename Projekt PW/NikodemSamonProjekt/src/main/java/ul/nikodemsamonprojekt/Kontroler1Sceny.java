@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Kontroler1Sceny {
-    int miejsca;
-    int pszczoly;
-    int czasZycia;
+    int miejsca; //ilosc miejsc w ulu
+    int pszczoly; //ilosc pszczol na poczatku programu
+    int czasZycia; //czas zycia pszczoly liczony iloscia odwiedzin
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -37,6 +37,7 @@ public class Kontroler1Sceny {
         }
         Kontroler2Sceny scene2Controller = loader.getController();
 
+        //zaladowanie poczatkowych wartosci danych wejsciowych
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream("config.properties"));

@@ -5,7 +5,6 @@ public class Krolowa extends Thread{
     Krolowa(Ul ul){
         this.ul = ul;
     }
-
     @Override
     public void run() {
         while(true){

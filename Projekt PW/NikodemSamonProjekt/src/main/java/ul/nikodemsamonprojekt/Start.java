@@ -11,6 +11,7 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            //uruchomienie pierwszej sceny
             Parent root = FXMLLoader.load(getClass().getResource("Scena1.fxml"));
             Scene scena1 = new Scene(root);
             stage.setScene(scena1);

@@ -4,7 +4,7 @@ public class Pszczola extends Thread{
     private final Ul ul;
     private int ileWizyt;
     private int maksWizyt;
-    private boolean nowa;
+    private boolean nowa; // informacja czy pszczola urodzila sie w ulu
     private int id;
     Pszczola(int ileWizyt, int maksWizyt, Ul ul, int id, boolean nowa){
         this.ileWizyt = ileWizyt;
@@ -43,6 +43,6 @@ public class Pszczola extends Thread{
             ul.wyjdz(ileWizyt, id, maksWizyt);
 
         }
-        System.out.println("Pszczolka " + id + " umiera :(\n");
+        System.out.println("Pszczolka " + id + " umiera\n");
     }
 }

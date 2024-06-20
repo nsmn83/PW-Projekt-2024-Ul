@@ -5,10 +5,8 @@ import javafx.application.Platform;
 import java.util.concurrent.Semaphore;
 
 public class Ul {
-    private static int liczbaMiejsc;
-    private int wyklucie = 0;
-    private static int poczatkowaLiczbaPszczol;
-    private final Semaphore wlotek;
+    private int wyklucie = 0; //zmienna sluzaca do sprawdzenia czy ze wszystkich jajek wykluly sie pszczoly
+    private final Semaphore[] wlotek;
     private final Semaphore chce_wejsc;
     private final Semaphore chce_wyjsc;
     private final Semaphore miejsca;
@@ -16,18 +14,21 @@ public class Ul {
     private Kontroler2Sceny kontroler2Sceny;
     int id_pszczoly;
     int ileJaj;
+    boolean zajetoWejscie = false;
 
     public Ul(int pojemnosc, int ileJaj, int ilePszczol, Kontroler2Sceny kontroler2Sceny){
         this.kontroler2Sceny = kontroler2Sceny;
         this.id_pszczoly = ilePszczol + 1;
         this.ileJaj = ileJaj;
-        this.wlotek = new Semaphore(2);
+        this.wlotek = new Semaphore[2];
         this.chce_wejsc = new Semaphore(2,true);
         this.chce_wyjsc = new Semaphore(2, true);
         this.narodziny = new Semaphore(1);
         this.miejsca = new Semaphore(pojemnosc);
+        for (int i = 0; i < 2; i++) {
+            this.wlotek[i] = new Semaphore(1);
+        }
     }
-
 
     public synchronized void zwieksz(){
         wyklucie++;
@@ -40,6 +41,7 @@ public class Ul {
     public synchronized int getWyklucie(){
         return wyklucie;
     }
+
     public void wejdz(int ileWizyt, int nr){
         try {
             chce_wejsc.acquire();
@@ -51,17 +53,26 @@ public class Ul {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        try {
-            wlotek.acquire();
-            if (kontroler2Sceny != null) {
-                Platform.runLater(() -> kontroler2Sceny.wejdz());
+        zajetoWejscie = false;
+        while(!zajetoWejscie){
+            try {
+                if (wlotek[0].tryAcquire()) {
+                    zajetoWejscie = true;
+                    Platform.runLater(() -> kontroler2Sceny.wlot(100, true, false));
+                    System.out.println("Pszczolka " + nr+ " wchodzi do ula przez wejscie 1 po raz: \n" + ileWizyt);
+                    Thread.sleep(1500);
+                    wlotek[0].release();
+                } else if (wlotek[1].tryAcquire()) {
+                    zajetoWejscie = true;
+                    Platform.runLater(() -> kontroler2Sceny.wlot(300, true, false));
+                    System.out.println("Pszczolka " + nr+ " wchodzi do ula przez wejscie 2 po raz: \n" + ileWizyt);
+                    Thread.sleep(1500);
+                    wlotek[1].release();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
-        System.out.println("--> Pszczolka " + nr + " wchodzi do ula " + ileWizyt + " raz. Miejsc w ulu: " + miejsca.availablePermits());
-        wlotek.release();
         chce_wejsc.release();
     }
 
@@ -71,31 +82,45 @@ public class Ul {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        try {
-            wlotek.acquire();
-            if (kontroler2Sceny != null && ileWizyt == maksWizyt) {
-                Platform.runLater(() -> kontroler2Sceny.zgin());
+        zajetoWejscie = false;
+        while(!zajetoWejscie){
+            try {
+                if (wlotek[1].tryAcquire()) {
+                    zajetoWejscie = true;
+                    wywolajAnimacjeWylotu(ileWizyt, maksWizyt, 300);
+                    System.out.println("Pszczolka " + nr+ " wychodzi z ula przez wejscia 2 po raz: \n" + ileWizyt);
+                    Thread.sleep(1500);
+                    wlotek[1].release();
+                } else if (wlotek[0].tryAcquire()) {
+                    zajetoWejscie = true;
+                    wywolajAnimacjeWylotu(ileWizyt, maksWizyt, 100);
+                    System.out.println("Pszczolka " + nr+ " wychodzi z ula przez wejscie 1 po raz: \n" + ileWizyt);
+                    Thread.sleep(1500);
+                    wlotek[0].release();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            else if(kontroler2Sceny != null){
-                Platform.runLater(()-> kontroler2Sceny.wyjdz());
-            }
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
-        System.out.println("<-- Pszczolka " + nr + " wychodzi z ula " + ileWizyt + " raz\n");
-        wlotek.release();
-        miejsca.release();
         chce_wyjsc.release();
+        miejsca.release();
     }
 
+    public void wywolajAnimacjeWylotu(int ileWizyt,int maksWizyt, int ktoreWejscie){
+        if(ileWizyt == maksWizyt){
+            Platform.runLater(() -> kontroler2Sceny.wlot(ktoreWejscie, false, true));
+        }
+        else{
+            Platform.runLater(() -> kontroler2Sceny.wlot(ktoreWejscie, false, false));
+        }
+    }
+
+    //nowo narodzona pszczola zajmuje miejsca zajete przez krolowa
     public void narodziny(){
-        //procedura dla swiezo urodzonej pszczoly
         try {
             miejsca.acquire();
-            System.out.println("Pszczolka urodzila sie :)\n");
-            //jakas animacja?
             narodziny.acquire();
+            System.out.println("Pszczolka się urodziła.\n");
             zwieksz();
             narodziny.release();
         } catch (InterruptedException e) {
@@ -104,12 +129,13 @@ public class Ul {
     }
 
     public void zlozJaja(){
-        try {
-            miejsca.acquire(ileJaj);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        boolean zajeteMiejsce = false;
+        while(!zajeteMiejsce){
+            if(miejsca.tryAcquire(ileJaj)){
+               zajeteMiejsce = true;
+            }
         }
-        System.out.println("Krolowa zajela miejsce na jaja\n");
+        System.out.println("Królowa zajęła miejsce na jajeczka\n");
         try {
             chce_wejsc.acquire(2);
         } catch (InterruptedException e) {
@@ -120,7 +146,7 @@ public class Ul {
             new Pszczola(0,3,this, id_pszczoly, true).start();
             id_pszczoly++;
         }
-        while(getWyklucie() < ileJaj)
+        while(getWyklucie() < ileJaj) //czekanie dopoki wszystkie pszczoly sie nie wykluja
         {
             try {
                 Thread.sleep(500);
@@ -133,9 +159,15 @@ public class Ul {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        kontroler2Sceny.wypiszIleNowych(ileJaj);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         zeruj();
         narodziny.release();
+        kontroler2Sceny.wypiszZajecieMiejsca(ileJaj);
+        System.out.println("Pszczółki się wykluły - odblokowanie możliwości wchodzenia do ula\n");
         chce_wejsc.release(2);
     }
 

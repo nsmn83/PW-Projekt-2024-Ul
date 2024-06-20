@@ -16,104 +16,61 @@ import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class Kontroler2Sceny implements Initializable {
+public class Kontroler2Sceny {
 
     @FXML
-    private Text tekst;
+    private Text tekst; // tekst do wyswietlania informacji
     @FXML
-    private Pane panelAnimacji; // Panel do dodawania animacji
+    private Pane panelAnimacji; // panel do dodawania animacji
+
     private int liczbaMiejsc;
     private int poczatkowaLiczbaPszczol;
     private int czasZycia;
 
     private Ul ul;
     private final Random random = new Random();
-    private final int szerokosc = 900; // szerokość okna
-    private final int wysokosc = 600; // wysokość okna
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-    }
+    private final int szerokosc = 900; // szerokosc okna
+    private final int wysokosc = 600; // wysokosc okna
 
     public void startSymulacji(int liczbaMiejsc, int poczatkowaLiczbaPszczol, int czasZycia) {
         this.liczbaMiejsc = liczbaMiejsc;
         this.poczatkowaLiczbaPszczol = poczatkowaLiczbaPszczol;
         this.czasZycia = czasZycia;
-
         double temp = liczbaMiejsc * 0.8;
         int ileJaj = (int) temp;
-
         ul = new Ul(liczbaMiejsc, ileJaj, poczatkowaLiczbaPszczol, this);
-
         for (int i = 0; i < poczatkowaLiczbaPszczol; ++i) {
             Pszczola pszczola = new Pszczola(0, czasZycia, ul, i, false);
             pszczola.start();
         }
-
         Krolowa krolowa = new Krolowa(ul);
         krolowa.start();
     }
 
 
-    public void wejdz() {
-        // Tworzenie kółka
-        Circle circle = new Circle(20, Color.YELLOW);
+    public void wlot(int y, boolean wlot, boolean smierc) {
+        Circle circle = new Circle(20, smierc ? Color.RED : Color.YELLOW); //tworzenie kolka
         circle.setCenterX(-20);
-        circle.setCenterY(random.nextInt(wysokosc - 100)+50);
-
-        // Dodawanie kółka do panelu
+        circle.setCenterY(y);
         panelAnimacji.getChildren().add(circle);
 
-        // Tworzenie i konfiguracja animacji
+        int poczatek = -20; //kofiguracja animacji
+        int koniec = szerokosc+20;
+        if(wlot == false){
+            poczatek = szerokosc+20;
+            koniec = -20;
+        }
         TranslateTransition transition = new TranslateTransition(Duration.seconds(1), circle);
-        transition.setFromX(-20);
-        transition.setToX(szerokosc+20);
+        transition.setFromX(poczatek);
+        transition.setToX(koniec);
         transition.setOnFinished(event -> Platform.runLater(() -> panelAnimacji.getChildren().remove(circle)));
 
-        // Uruchomienie animacji
         transition.play();
     }
 
-    public void wyjdz() {
-        // Tworzenie kółka
-        Circle circle = new Circle(20, Color.YELLOW);
-        circle.setCenterX(-20);
-        circle.setCenterY(random.nextInt(wysokosc - 100)+50);
-
-        // Dodawanie kółka do panelu
-        panelAnimacji.getChildren().add(circle);
-
-        // Tworzenie i konfiguracja animacji
-        TranslateTransition transition = new TranslateTransition(Duration.seconds(1), circle);
-        transition.setFromX(szerokosc+20);
-        transition.setToX(-20);
-        transition.setOnFinished(event -> Platform.runLater(() -> panelAnimacji.getChildren().remove(circle)));
-
-        // Uruchomienie animacji
-        transition.play();
-    }
-
-    public void zgin() {
-        Circle circle = new Circle(20, Color.ORANGERED);
-        circle.setCenterX(-20);
-        circle.setCenterY(random.nextInt(wysokosc - 100)+50);
-
-        // Dodawanie kółka do panelu
-        panelAnimacji.getChildren().add(circle);
-
-        // Tworzenie i konfiguracja animacji
-        TranslateTransition transition = new TranslateTransition(Duration.seconds(1), circle);
-        transition.setFromX(szerokosc+20);
-        transition.setToX(-20);
-        transition.setOnFinished(event -> Platform.runLater(() -> panelAnimacji.getChildren().remove(circle)));
-
-        // Uruchomienie animacji
-        transition.play();
-    }
-
-    public void wypiszIleNowych(int x){
-        tekst.setText("Wyklucie " + x + " pszczół.\n");
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+    public void wypiszZajecieMiejsca(int x){
+            tekst.setText("Ilość nowych pszczół: " + x + "\n");
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> tekst.setText(""));
         pause.play();
     }
