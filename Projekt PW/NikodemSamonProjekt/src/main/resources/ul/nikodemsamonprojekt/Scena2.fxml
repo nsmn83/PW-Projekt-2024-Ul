@@ -33,5 +33,10 @@
             <Font name="System Bold" size="27.0" />
          </font>
       </Text>
+      <Text fx:id="tekst2" layoutX="26.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="398.0">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

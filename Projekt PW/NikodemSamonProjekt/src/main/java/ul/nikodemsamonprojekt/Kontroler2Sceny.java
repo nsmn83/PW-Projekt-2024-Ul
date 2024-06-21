@@ -14,7 +14,11 @@ import java.util.Random;
 public class Kontroler2Sceny {
 
     @FXML
-    private Text tekst; // tekst do wyswietlania informacji
+    private Text tekst; // tekst do wyswietlania informacji o liczbie nowych pszczol
+
+    @FXML
+    private Text tekst2; //tekst do wyswietlenia gotowosci krolowej do skladania jajek
+
     @FXML
     private AnchorPane panelAnimacji;
 
@@ -33,7 +37,10 @@ public class Kontroler2Sceny {
         this.czasZycia = czasZycia;
         double temp = liczbaMiejsc * 0.8;
         int ileJaj = (int) temp;
-        ul = new Ul(liczbaMiejsc, ileJaj, poczatkowaLiczbaPszczol, this);
+        if (ileJaj == 0){
+            ileJaj = 1;
+        }
+        ul = new Ul(liczbaMiejsc, ileJaj, poczatkowaLiczbaPszczol, this, czasZycia);
         for (int i = 0; i < poczatkowaLiczbaPszczol; ++i) {
             Pszczola pszczola = new Pszczola(0, czasZycia, ul, i, false);
             pszczola.start();
@@ -64,9 +71,16 @@ public class Kontroler2Sceny {
     }
 
     public void wypiszZajecieMiejsca(int x){
-        tekst.setText("Ilość nowych pszczół: " + x + "\n");
+        tekst.setText("Ilość nowych pszczół: " + x);
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> tekst.setText(""));
+        pause.play();
+    }
+
+    public void zgloscGotowosc(){
+        tekst2.setText("Królowa jest gotowa złożyć jajka.\n");
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> tekst2.setText(""));
         pause.play();
     }
 }

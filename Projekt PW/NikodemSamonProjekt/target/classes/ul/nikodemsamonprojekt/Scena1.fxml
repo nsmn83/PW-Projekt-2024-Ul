@@ -20,12 +20,13 @@
             <Font name="System Bold" size="34.0" />
          </font>
       </Text>
-      <ImageView fx:id="beeHive" fitHeight="364.0" fitWidth="382.0" layoutX="207.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="beeHive" fitHeight="350.0" fitWidth="362.0" layoutX="224.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../ul-scena1.png" />
          </image>
       </ImageView>
       <Text layoutX="47.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wprowadź czas życia:" />
       <TextField fx:id="inputZycia" layoutX="47.0" layoutY="293.0" />
+      <Text layoutX="431.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*w przypadku wprowadzenia niedodatniej liczby dane wejściowe zostaną pobrane z pliku konfiguracyjnego. Sa to: liczba Pszczół - 15, liczba miejsc - 5, czas życia - 3. " wrappingWidth="134.8828125" />
    </children>
 </AnchorPane>

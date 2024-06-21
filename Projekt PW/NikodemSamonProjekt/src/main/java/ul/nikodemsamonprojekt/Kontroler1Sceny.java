@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Kontroler1Sceny {
-    int miejsca; //ilosc miejsc w ulu
-    int pszczoly; //ilosc pszczol na poczatku programu
-    int czasZycia; //czas zycia pszczoly liczony iloscia odwiedzin
+    private int miejsca; //ilosc miejsc w ulu
+    private int pszczoly; //ilosc pszczol na poczatku programu
+    private int czasZycia; //czas zycia pszczoly liczony iloscia odwiedzin
     private Stage stage;
     private Scene scene;
     private Parent root;

@@ -46,6 +46,6 @@ public class Pszczola extends Thread{
             ul.wyjdz(ileWizyt, id, maksWizyt);
 
         }
-        System.out.println("Pszczolka " + id + " umiera\n");
+        System.out.println("Pszczółka " + id + " umiera\n");
     }
 }
